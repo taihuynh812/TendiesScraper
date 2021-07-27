@@ -1,27 +1,29 @@
-const fetch = require('node-fetch')
+import fetch from 'node-fetch'
 
+console.log("inside fetch tickers"
+)
 const todayTime = Math.round(new Date().getTime() / 1000)
-function yesterdayTime(){
+export function yesterdayTime(){
     return Math.round((new Date().getTime() - (36 * 60 * 60 * 1000)) / 1000);
 } 
 
-const tickers = {}
+export const tickers = {}
 
-function sortTickers(){
-    return Object.entries(tickers).sort((a,b) => b[1]-a[1]).slice(0,6)
+export function sortTickers(){
+    let sortedTickers = []
+    Object.entries(tickers).sort((a,b) => b[1]-a[1]).slice(0,10).forEach(ticker => sortedTickers.push({[ticker[0]]: ticker[1]}))
+    return sortedTickers
 }
 
-let excludeWords = ["COVID", "DD", "NO", "YES", "WSB", "SHORT", "NYC", "FLOAT", "LONG", "OTM", "ITM", "DFV", "BUY", "SELL", "STOCK", "YTD", "GREAT", "BUT", "WHEN", 
+export const excludeWords = ["COVID", "DD", "NO", "YES", "WSB", "SHORT", "NYC", "FLOAT", "LONG", "OTM", "ITM", "DFV", "BUY", "SELL", "STOCK", "YTD", "GREAT", "BUT", "WHEN", 
                         "YOU", "WILL", "LOTS", "OF", "LOL", "USA", "YOLO", "OP", "STOP", "TO", "THE", "MOON", "THIS", "NOT", "GAIN", "LOSS", "US", "TV", "RIP",
-                        "JPOW", "CEO", "VOTE", "BITCH", "LIKE", 'WTF', "MINOR", "IPO"
+                        "JPOW", "CEO", "VOTE", "BITCH", "LIKE", 'WTF', "MINOR", "IPO", "APE", "SAVE", "SPAC"
                         ].reduce((acc, a) => (acc[a]="placeholder", acc), {})
 
 
-const redditUrl = `https://api.pushshift.io/reddit/search/submission/?subreddit=wallstreetbets&sort=desc&sort_type=created_utc&after=${yesterdayTime()}&size=1000`
+export const redditUrl = `https://api.pushshift.io/reddit/search/submission/?subreddit=wallstreetbets&sort=desc&sort_type=created_utc&after=${yesterdayTime()}&size=1000`
 
-console.log(redditUrl)
-
-function isTicker(ticker){    
+export function isTicker(ticker){    
     let AZ = "$ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     if (excludeWords[ticker.toUpperCase()]) return false
     if (ticker.length < 2 || ticker.length > 5) return false
@@ -36,9 +38,7 @@ function isTicker(ticker){
     }
 }
 
-isTicker("$ABC")
-
-function extractTickers(string){
+export function extractTickers(string){
     let stringArr = string.split(" ")
     for (let i=0; i < stringArr.length; i++){
         let word = isTicker(stringArr[i])
@@ -52,7 +52,7 @@ function extractTickers(string){
     }
 }
 
-async function extractFromComments(url, cb){
+export async function extractFromComments(url, cb){
     const subredditReplies = await fetch(url)
         .then(res => res.json())
         .then(data => {
@@ -78,7 +78,7 @@ async function extractFromComments(url, cb){
 }
 
 
-async function fetchTickers(cb){
+export async function fetchTickers(cb){
     const subreddit = await fetch(redditUrl)
         .then(res => res.json())
         .then(data => {
@@ -95,16 +95,5 @@ async function fetchTickers(cb){
             return results
         })
         const allPromises = await Promise.all(subreddit)
-    console.log(tickers)
     return cb()
 }
-
-function greeting(){
-    return("Callback")
-}
-
-fetchTickers(greeting)
-setTimeout(()=>console.log(tickers), 20000);
-setTimeout(()=>console.log(sortTickers()), 20000);
-
-

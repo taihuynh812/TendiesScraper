@@ -1,5 +1,6 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { experiments } = require('webpack');
 
 const config = {
     entry: [
@@ -14,8 +15,13 @@ const config = {
         rules: [
             {
                 test: /\.js$/, 
-                use: ['babel-loader'], 
                 exclude: /node_modules/, 
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        plugins: ['@babel/plugin-syntax-top-level-await']
+                    }
+                }, 
             },
             {
                 test: /\.s?[ac]ss$/, 
@@ -39,6 +45,5 @@ module.exports = (env, argv) => {
     } else {
         config.devtool = 'eval-source-map';
     }
-
     return config;
 }
