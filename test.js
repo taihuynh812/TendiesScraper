@@ -50,8 +50,8 @@ function extractTickers(string){
     }
 }
 
-async function extractFromComments(url){
-    await fetch(url)
+async function extractFromComments(url, cb){
+    const subredditReplies = await fetch(url)
         .then(res => res.json())
         .then(data => {
             if (data[1].data.children.length > 0){
@@ -68,17 +68,21 @@ async function extractFromComments(url){
                         }
                     }
                 }
-            } 
+            }
+            console.log("After all replies")
+            return "hello"
         })
         .catch(err => console.log(err))
-    return
+    console.log(subredditReplies)
+    return Promise.resolve("Inside extractComments")
 }
 
 
-async function fetchTickers(){
-    await fetch(redditUrl)
+async function fetchTickers(cb){
+    const subreddit = await fetch(redditUrl)
         .then(res => res.json())
         .then(data => {
+            let results = []
             for (let i=0; i < data.data.length; i++){
                 let currentPost = data.data[i]
                 let currentTitle = currentPost.title
@@ -86,13 +90,21 @@ async function fetchTickers(){
                 let postCommentsURL = currentPost.full_link.slice(0, currentPost.full_link.length - 1) + ".json"
                 postCommentsURL = decodeURI(postCommentsURL)
                 postCommentsURL = encodeURI(postCommentsURL)
-                extractFromComments(postCommentsURL)
-                
+                results.push(extractFromComments(postCommentsURL))
             }
-        }).then(() => console.log(tickers))
+            return results
+        })
+        console.log(subreddit)
+        const allPromises = await Promise.all(subreddit)
+    console.log(tickers)
+    return cb()
 }
 
-fetchTickers()
-setTimeout(()=>console.log(sortTickers()), 30000);
+function greeting(){
+    console.log("Callback")
+}
+
+fetchTickers(greeting)
+setTimeout(()=>console.log(tickers), 20000);
 
 
