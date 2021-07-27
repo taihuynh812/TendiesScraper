@@ -1,6 +1,7 @@
 const express = require('express'); // web framework
 const fetch = require('node-fetch'); // for making AJAX requests
 const path = require('path');
+const request = require('request')
 
 // put environmental variables defined in .env file on process.env
 require('dotenv').config();
@@ -14,6 +15,18 @@ app.use(express.static('dist'));
 app.get('/', (request, response) => {
     response.sendFile(`${__dirname}/dist/index.html`);
 });
+
+const redditUrl = `https://www.reddit.com/r/wallstreetbets.json`
+
+app.get("/getdata", (req, res, next) => {
+    request.get(redditUrl, (err, response, body) => {
+        if(err) {
+            return next(err)
+        }
+        res.json(JSON.parse(body))
+    })
+})
+
 
 // Heroku sets process.env.PORT in production; use 8000 in dev
 const PORT = process.env.PORT || 8000;
