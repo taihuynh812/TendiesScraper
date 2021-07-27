@@ -12,12 +12,14 @@ function sortTickers(){
 }
 
 let excludeWords = ["COVID", "DD", "NO", "YES", "WSB", "SHORT", "NYC", "FLOAT", "LONG", "OTM", "ITM", "DFV", "BUY", "SELL", "STOCK", "YTD", "GREAT", "BUT", "WHEN", 
-                        "YOU", "WILL", "LOTS", "OF", "LOL", "USA", "YOLO", "OP", "STOP", "TO", "THE", "MOON", "THIS", "NOT", "GAIN", "LOSS", "US", "TV", "RIP"
+                        "YOU", "WILL", "LOTS", "OF", "LOL", "USA", "YOLO", "OP", "STOP", "TO", "THE", "MOON", "THIS", "NOT", "GAIN", "LOSS", "US", "TV", "RIP",
+                        "JPOW", "CEO", "VOTE", "BITCH", "LIKE", 'WTF', "MINOR", "IPO"
                         ].reduce((acc, a) => (acc[a]="placeholder", acc), {})
 
 
 const redditUrl = `https://api.pushshift.io/reddit/search/submission/?subreddit=wallstreetbets&sort=desc&sort_type=created_utc&after=${yesterdayTime()}&size=1000`
 
+console.log(redditUrl)
 
 function isTicker(ticker){    
     let AZ = "$ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -69,11 +71,9 @@ async function extractFromComments(url, cb){
                     }
                 }
             }
-            console.log("After all replies")
             return "hello"
         })
         .catch(err => console.log(err))
-    console.log(subredditReplies)
     return Promise.resolve("Inside extractComments")
 }
 
@@ -94,17 +94,17 @@ async function fetchTickers(cb){
             }
             return results
         })
-        console.log(subreddit)
         const allPromises = await Promise.all(subreddit)
     console.log(tickers)
     return cb()
 }
 
 function greeting(){
-    console.log("Callback")
+    return("Callback")
 }
 
 fetchTickers(greeting)
 setTimeout(()=>console.log(tickers), 20000);
+setTimeout(()=>console.log(sortTickers()), 20000);
 
 
