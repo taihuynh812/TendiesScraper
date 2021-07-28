@@ -10,9 +10,7 @@
     "node": "16.3.0"
   },
   "scripts": {
-    "start": "node app.js",
-    "start:debug": "node --inspect app.js",
-    "run": "webpack --watch --mode=development",
+    "start": "webpack --watch --mode=development",
     "build": "webpack --mode=production"
   },
   "keywords": [],

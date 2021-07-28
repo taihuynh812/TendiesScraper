@@ -9,7 +9,7 @@ const tickers = {}
 
 export function sortTickers(){
     let sortedTickers = []
-    Object.entries(tickers).sort((a,b) => b[1]-a[1]).slice(0,10).forEach(ticker => sortedTickers.push({[ticker[0]]: ticker[1]}))
+    Object.entries(tickers).sort((a,b) => b[1]-a[1]).slice(0,10).forEach(ticker => sortedTickers.push({ticker: ticker[0], mention: parseInt(ticker[1])}))
     return sortedTickers
 }
 
@@ -100,49 +100,84 @@ export async function fetchTickers(cb){
 
 
 
-fetchTickers(sortTickers)
-    .then(data => window.data = data)
-
-console.log("Inside Index file")
-
-
 
 document.addEventListener("DOMContentLoaded", function(e) {
-    const data = [
-        {name: "1", score: 10},
-        {name: "2", score: 20},
-        {name: "3", score: 30},
-        {name: "4", score: 40}
-    ]
+
     const width = 800;
     const height = 400;
-    const margin = { top: 50, bottom: 50, left: 50, right: 50 }
+    const margin = { top: 20, bottom: 20, left: 20, right: 20 }
     
-        const svg = d3.select('#d3-container')
-            .append("svg")
-            .attr("height", height - margin.top - margin.bottom)
-            .attr("width", width - margin.left - margin.right)
-            .attr('viewbox', [0, 0, width, height]);
-    
-        const x = d3.scaleBand()
-            .domain(d3.range(data.length))
-            .range([margin.left, width - margin.right])
-            .padding(0.1);
-    
-        const y = d3.scaleLinear()
-            .domain([0, 100])
-            .range([height - margin.bottom, margin.top])
-    
-        svg
-            .append('g')
-            .attr("fill", "royalblue")
-            .selectAll('rect')
-            .data(data.sort((a, b) => d3.descending(a.score, b.score)))
-            .join('rect')
-            .attr("x", (d, i) => x(i))
-            .attr('y', (d) => y(d.score))
-            .attr("height", d => y(0) - y(d.score))
-            .attr("width", x.bandwidth())
-    
-        svg.node()
+    const result = fetchTickers(sortTickers)
+        .then(data => {
+            console.log(data)
+            const svg = d3.select('#d3-container')
+                .append("svg")
+                .attr("height", height - margin.top - margin.bottom)
+                .attr("width", width - margin.left - margin.right)
+                .attr('viewbox', [0, 0, width, height]);
+        
+            const x = d3.scaleBand()
+                .domain(d3.range(data.length))
+                .range([margin.left, width - margin.right])
+                .padding(0.1);
+        
+            const y = d3.scaleLinear()
+                .domain([0, 20])
+                .range([height - margin.bottom, margin.top])
+        
+            svg
+                .append('g')
+                .attr("fill", "royalblue")
+                .selectAll('rect')
+                .data(data.sort((a,b) => d3.descending(a.mention, b.mention)))
+                .join('rect')
+                .attr("x", (d, i) => x(i))
+                .attr('y', (d) => y(d.mention))
+                .attr("height", d => y(0) - y(d.mention))
+                .attr("width", x.bandwidth())
+        
+            svg.node()
+        })
 })
+
+// document.addEventListener("DOMContentLoaded", function(e) {
+
+//     const data = [
+//         {name: "1", score: 70},
+//         {name: "2", score: 80},
+//         {name: "3", score: 90},
+//         {name: "4", score: 100}
+//     ]
+
+//     const width = 800;
+//     const height = 400;
+//     const margin = { top: 50, bottom: 50, left: 50, right: 50 }
+
+//     const svg = d3.select('#d3-container')
+//         .append("svg")
+//         .attr("height", height - margin.top - margin.bottom)
+//         .attr("width", width - margin.left - margin.right)
+//         .attr('viewbox', [0, 0, width, height]);
+
+//     const x = d3.scaleBand()
+//         .domain(d3.range(data.length))
+//         .range([margin.left, width - margin.right])
+//         .padding(0.1);
+
+//     const y = d3.scaleLinear()
+//         .domain([0, 100])
+//         .range([height - margin.bottom, margin.top])
+
+//     svg
+//         .append('g')
+//         .attr("fill", "royalblue")
+//         .selectAll('rect')
+//         .data(data.sort((a,b) => d3.descending(a.score, b.score)))
+//         .join('rect')
+//         .attr("x", (d, i) => x(i))
+//         .attr('y', (d) => y(d.score))
+//         .attr("height", d => y(0) - y(d.score))
+//         .attr("width", x.bandwidth())
+    
+//     svg.node()
+// })
