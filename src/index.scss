@@ -1,0 +1,35 @@
+body{
+    background-color: rgb(29, 29, 29);
+}
+
+
+#d3-container {
+    height: 600px;
+    border: 1px solid rgb(74, 74, 74);
+    background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url("https://g.foolcdn.com/image/?url=https%3A//g.foolcdn.com/editorial/images/575196/stock-arrow-up-blue-background.jpg&w=2000&op=resize");
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    .d3-axes{
+        color: rgb(232, 232, 232);
+    }
+}
+
+span.tooltip-donut {
+    position: absolute;
+    text-align: center;
+    padding: .5rem;
+    background: #FFFFFF;
+    color: #313639;
+    border: 1px solid #313639;
+    border-radius: 8px;
+    pointer-events: none;
+    font-size: 18px;
+}
+
+.svg-box{
+    
+}

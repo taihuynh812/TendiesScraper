@@ -1,29 +1,29 @@
 import fetch from 'node-fetch'
 
-console.log("inside fetch tickers"
-)
 const todayTime = Math.round(new Date().getTime() / 1000)
-export function yesterdayTime(){
+function yesterdayTime(){
     return Math.round((new Date().getTime() - (36 * 60 * 60 * 1000)) / 1000);
 } 
 
-export const tickers = {}
+const tickers = {}
 
-export function sortTickers(){
+function sortTickers(){
     let sortedTickers = []
-    Object.entries(tickers).sort((a,b) => b[1]-a[1]).slice(0,10).forEach(ticker => sortedTickers.push({[ticker[0]]: ticker[1]}))
+    let top10 = Object.entries(tickers).sort((a,b) => b[1]-a[1]).slice(0,10)
+    top10.sort((a,b) => a[1]-b[1]).forEach(ticker => sortedTickers.push({ticker: ticker[0], mention: parseInt(ticker[1])}))
     return sortedTickers
 }
 
-export const excludeWords = ["COVID", "DD", "NO", "YES", "WSB", "SHORT", "NYC", "FLOAT", "LONG", "OTM", "ITM", "DFV", "BUY", "SELL", "STOCK", "YTD", "GREAT", "BUT", "WHEN", 
-                        "YOU", "WILL", "LOTS", "OF", "LOL", "USA", "YOLO", "OP", "STOP", "TO", "THE", "MOON", "THIS", "NOT", "GAIN", "LOSS", "US", "TV", "RIP",
-                        "JPOW", "CEO", "VOTE", "BITCH", "LIKE", 'WTF', "MINOR", "IPO", "APE", "SAVE", "SPAC"
-                        ].reduce((acc, a) => (acc[a]="placeholder", acc), {})
+let excludeWords = ["COVID", "DD", "NO", "YES", "WSB", "SHORT", "NYC", "FLOAT", "LONG", "OTM", "ITM", "DFV", "BUY", "SELL", "STOCK", "YTD", "GREAT", "BUT", "WHEN", 
+        "YOU", "WILL", "LOTS", "OF", "LOL", "USA", "YOLO", "OP", "STOP", "TO", "THE", "MOON", "THIS", "NOT", "GAIN", "LOSS", "US", "TV", "RIP", "SEC", "CHINA",
+        "JPOW", "CEO", "VOTE", "BITCH", "LIKE", 'WTF', "MINOR", "IPO", "APE", "SAVE", "SPAC", "DO", "DONT", "PLACE", "YOUR", "MY", "MINE", "PORN", "WEDGE",
+        "JOB", "IN", "OUT", "JAIL", "AND", "IRL", "IS", "ETF", "DOW", "DIA", "MOVE"
+        ].reduce((acc, a) => (acc[a]="placeholder", acc), {})
 
 
-export const redditUrl = `https://api.pushshift.io/reddit/search/submission/?subreddit=wallstreetbets&sort=desc&sort_type=created_utc&after=${yesterdayTime()}&size=1000`
+const redditUrl = `https://api.pushshift.io/reddit/search/submission/?subreddit=wallstreetbets&sort=desc&sort_type=created_utc&after=${yesterdayTime()}&size=1000`
 
-export function isTicker(ticker){    
+function isTicker(ticker){    
     let AZ = "$ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     if (excludeWords[ticker.toUpperCase()]) return false
     if (ticker.length < 2 || ticker.length > 5) return false
@@ -38,7 +38,7 @@ export function isTicker(ticker){
     }
 }
 
-export function extractTickers(string){
+function extractTickers(string){
     let stringArr = string.split(" ")
     for (let i=0; i < stringArr.length; i++){
         let word = isTicker(stringArr[i])
@@ -52,7 +52,7 @@ export function extractTickers(string){
     }
 }
 
-export async function extractFromComments(url, cb){
+async function extractFromComments(url, cb){
     const subredditReplies = await fetch(url)
         .then(res => res.json())
         .then(data => {
@@ -77,8 +77,7 @@ export async function extractFromComments(url, cb){
     return Promise.resolve("Inside extractComments")
 }
 
-
-export async function fetchTickers(cb){
+async function fetchTickers(cb){
     const subreddit = await fetch(redditUrl)
         .then(res => res.json())
         .then(data => {
@@ -97,3 +96,5 @@ export async function fetchTickers(cb){
         const allPromises = await Promise.all(subreddit)
     return cb()
 }
+
+export const sortedTickers = fetchTickers(sortTickers)

@@ -1,183 +1,82 @@
-import fetch from 'node-fetch'
+import { sortedTickers } from '../fetch_tickers';
 
-const todayTime = Math.round(new Date().getTime() / 1000)
-function yesterdayTime(){
-    return Math.round((new Date().getTime() - (36 * 60 * 60 * 1000)) / 1000);
-} 
+sortedTickers.then(data => {
+    console.log(data)
+    const width = 1500
+    const height = 600   
+    const margin = {top: 50, bottom: 50, left: 50, right: 50}
 
-const tickers = {}
+    var svg = d3.select('#d3-container')
+        .append('svg')
+        .attr('class', 'svg-box')
+        .attr("width", width - margin.right)
+        .attr("height", height)
+        .attr('viewbox', [0,0,width, height])
 
-export function sortTickers(){
-    let sortedTickers = []
-    Object.entries(tickers).sort((a,b) => b[1]-a[1]).slice(0,10).forEach(ticker => sortedTickers.push({ticker: ticker[0], mention: parseInt(ticker[1])}))
-    return sortedTickers
-}
+    const x = d3.scaleBand()
+        .domain(d3.range(data.length))
+        .range([margin.left, width - margin.right - margin.left])
+        .padding(0.1)
 
-let excludeWords = ["COVID", "DD", "NO", "YES", "WSB", "SHORT", "NYC", "FLOAT", "LONG", "OTM", "ITM", "DFV", "BUY", "SELL", "STOCK", "YTD", "GREAT", "BUT", "WHEN", 
-                        "YOU", "WILL", "LOTS", "OF", "LOL", "USA", "YOLO", "OP", "STOP", "TO", "THE", "MOON", "THIS", "NOT", "GAIN", "LOSS", "US", "TV", "RIP",
-                        "JPOW", "CEO", "VOTE", "BITCH", "LIKE", 'WTF', "MINOR", "IPO", "APE", "SAVE", "SPAC"
-                        ].reduce((acc, a) => (acc[a]="placeholder", acc), {})
+    const y = d3.scaleLinear()
+        .domain([0, Math.ceil(data[data.length - 1].mention/10) * 10])
+        .range([height - margin.bottom, margin.top])
 
+    var span = d3.select('body').append('span')
+        .attr("class", "tooltip-donut")
+        .style("opacity", 0)
 
-const redditUrl = `https://api.pushshift.io/reddit/search/submission/?subreddit=wallstreetbets&sort=desc&sort_type=created_utc&after=${yesterdayTime()}&size=1000`
+    svg.append('g')
+        .selectAll('rect')
+        .data(data)
+        .join('rect')
+            .attr('class', "bar")
+            .style("fill", "rgba(123, 87, 255)")
+            .attr("x", (d,i) => x(i))
+            .attr("y", (d,i) => y(d.mention))
+            .attr("height", d => y(0) - y(d.mention))
+            .attr("width", x.bandwidth())
+            .on("mouseover", function(d) {
+                d3.select(event.currentTarget).transition()
+                    .duration("50")
+                    .attr("opacity", ".85")
+                span.transition().duration(50).style("opacity", "1")
+                let displayText = d.ticker + ": " + d.mention
+                span.html(displayText)
+                    .style('left', (d3.event.pageX + 5) + "px")
+                    .style('top', (d3.event.pageY - 5) + "px")
+            })
+            .on("mouseout", function(d){
+                d3.select(event.currentTarget).transition()
+                    .duration("50")
+                    .attr("opacity", "1")
+                span.transition().duration(50).style("opacity", "0")
 
-function isTicker(ticker){    
-    let AZ = "$ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    if (excludeWords[ticker.toUpperCase()]) return false
-    if (ticker.length < 2 || ticker.length > 5) return false
-    for (let i=0; i<ticker.length; i++){
-        if(parseInt(ticker[i])) return false
-        if(!AZ.includes(ticker[i])) return false
+            })
+
+    function xAxis(g){
+        g.call(d3.axisBottom(x).tickFormat(i => data[i].ticker))
+        .attr("transform", `translate(0, ${height - margin.bottom + 10})`)
+        .attr("font-size", "20px")
+        .attr("class", "d3-axes")
+        
     }
-    if (ticker[0] === "$"){
-        return ticker.slice(1).toUpperCase()
-    } else {
-        return ticker
+
+    function yAxis(g){
+        g.call(d3.axisLeft(y).ticks(null, data.format))
+        .attr('transform', `translate(${margin.left, margin.left})`)
+        .attr('font-size', "14px")
+        .attr("class", "d3-axes")
     }
-}
 
-function extractTickers(string){
-    let stringArr = string.split(" ")
-    for (let i=0; i < stringArr.length; i++){
-        let word = isTicker(stringArr[i])
-        if(word){
-            if (!tickers[word]){
-                tickers[word] = 1
-            } else {
-                tickers[word] += 1
-            }
-        }
-    }
-}
-
-async function extractFromComments(url, cb){
-    const subredditReplies = await fetch(url)
-        .then(res => res.json())
-        .then(data => {
-            if (data[1].data.children.length > 0){
-                for (let i=1; i < data[1].data.children.length; i++){
-                    if (data[1].data.children[i].data.body){
-                        let currentReply = data[1].data.children[i].data.body
-                        extractTickers(currentReply)
-                        if (currentReply.replies){
-                            let repliesWithinReplyArray = currentReply.replies.data.chidlren
-                            for (let j=0; j < repliesWithinReplyArray.length; j++){
-                                let reply = repliesWithinReplyArray[j].data.body
-                                extractTickers(reply)
-                            }
-                        }
-                    }
-                }
-            }
-            return "hello"
-        })
-        .catch(err => console.log(err))
-    return Promise.resolve("Inside extractComments")
-}
-
-
-export async function fetchTickers(cb){
-    const subreddit = await fetch(redditUrl)
-        .then(res => res.json())
-        .then(data => {
-            let results = []
-            for (let i=0; i < data.data.length; i++){
-                let currentPost = data.data[i]
-                let currentTitle = currentPost.title
-                extractTickers(currentTitle)
-                let postCommentsURL = currentPost.full_link.slice(0, currentPost.full_link.length - 1) + ".json"
-                postCommentsURL = decodeURI(postCommentsURL)
-                postCommentsURL = encodeURI(postCommentsURL)
-                results.push(extractFromComments(postCommentsURL))
-            }
-            return results
-        })
-        const allPromises = await Promise.all(subreddit)
-    return cb()
-}
+    svg.append("g").call(yAxis)
+    svg.append("g").call(xAxis)
 
 
 
 
 
 
-document.addEventListener("DOMContentLoaded", function(e) {
 
-    const width = 800;
-    const height = 400;
-    const margin = { top: 20, bottom: 20, left: 20, right: 20 }
-    
-    const result = fetchTickers(sortTickers)
-        .then(data => {
-            console.log(data)
-            const svg = d3.select('#d3-container')
-                .append("svg")
-                .attr("height", height - margin.top - margin.bottom)
-                .attr("width", width - margin.left - margin.right)
-                .attr('viewbox', [0, 0, width, height]);
-        
-            const x = d3.scaleBand()
-                .domain(d3.range(data.length))
-                .range([margin.left, width - margin.right])
-                .padding(0.1);
-        
-            const y = d3.scaleLinear()
-                .domain([0, 20])
-                .range([height - margin.bottom, margin.top])
-        
-            svg
-                .append('g')
-                .attr("fill", "royalblue")
-                .selectAll('rect')
-                .data(data.sort((a,b) => d3.descending(a.mention, b.mention)))
-                .join('rect')
-                .attr("x", (d, i) => x(i))
-                .attr('y', (d) => y(d.mention))
-                .attr("height", d => y(0) - y(d.mention))
-                .attr("width", x.bandwidth())
-        
-            svg.node()
-        })
 })
 
-// document.addEventListener("DOMContentLoaded", function(e) {
-
-//     const data = [
-//         {name: "1", score: 70},
-//         {name: "2", score: 80},
-//         {name: "3", score: 90},
-//         {name: "4", score: 100}
-//     ]
-
-//     const width = 800;
-//     const height = 400;
-//     const margin = { top: 50, bottom: 50, left: 50, right: 50 }
-
-//     const svg = d3.select('#d3-container')
-//         .append("svg")
-//         .attr("height", height - margin.top - margin.bottom)
-//         .attr("width", width - margin.left - margin.right)
-//         .attr('viewbox', [0, 0, width, height]);
-
-//     const x = d3.scaleBand()
-//         .domain(d3.range(data.length))
-//         .range([margin.left, width - margin.right])
-//         .padding(0.1);
-
-//     const y = d3.scaleLinear()
-//         .domain([0, 100])
-//         .range([height - margin.bottom, margin.top])
-
-//     svg
-//         .append('g')
-//         .attr("fill", "royalblue")
-//         .selectAll('rect')
-//         .data(data.sort((a,b) => d3.descending(a.score, b.score)))
-//         .join('rect')
-//         .attr("x", (d, i) => x(i))
-//         .attr('y', (d) => y(d.score))
-//         .attr("height", d => y(0) - y(d.score))
-//         .attr("width", x.bandwidth())
-    
-//     svg.node()
-// })
