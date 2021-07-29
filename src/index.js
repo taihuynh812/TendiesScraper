@@ -31,7 +31,7 @@ sortedTickers.then(data => {
         .data(data)
         .join('rect')
             .attr('class', "bar")
-            .style("fill", "rgba(123, 87, 255)")
+            .style("fill", "rgba(31, 31, 255)")
             .attr("x", (d,i) => x(i))
             .attr("y", (d,i) => y(d.mention))
             .attr("height", d => y(0) - y(d.mention))

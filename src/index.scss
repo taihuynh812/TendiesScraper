@@ -2,8 +2,20 @@ body{
     background-color: rgb(29, 29, 29);
 }
 
+.page-header{
+    color:rgb(255, 255, 255)
+}
+
+.graph-header{
+    color: rgba(232, 232, 232);
+    height: 70px;
+    width: 20%;
+    position: absolute;
+    left: 40%;
+}
 
 #d3-container {
+    position:relative;
     height: 600px;
     border: 1px solid rgb(74, 74, 74);
     background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url("https://g.foolcdn.com/image/?url=https%3A//g.foolcdn.com/editorial/images/575196/stock-arrow-up-blue-background.jpg&w=2000&op=resize");
@@ -13,6 +25,7 @@ body{
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
+    margin-top: 50px;
     .d3-axes{
         color: rgb(232, 232, 232);
     }
@@ -30,6 +43,3 @@ span.tooltip-donut {
     font-size: 18px;
 }
 
-.svg-box{
-    
-}
