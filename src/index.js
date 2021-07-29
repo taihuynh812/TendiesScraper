@@ -1,5 +1,6 @@
 import { sortedTickers } from '../fetch_tickers';
 
+
 sortedTickers.then(data => {
     console.log(data)
     const width = 1500

@@ -1,6 +1,5 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { experiments } = require('webpack');
 
 const config = {
     entry: [

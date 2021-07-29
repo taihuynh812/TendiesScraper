@@ -10,18 +10,21 @@
     "node": "16.3.0"
   },
   "scripts": {
+    "node": "node app.js",
     "start": "webpack --watch --mode=development",
-    "start server": "node app.js",
     "start:debug": "node --inspect app.js",
     "build": "webpack --mode=production"
   },
+  "proxy": "http://localhost:8000",
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@babel/core": "^7.14.8",
     "@babel/preset-env": "^7.14.8",
+    "axios": "^0.21.1",
     "babel-loader": "^8.2.2",
+    "body-parser": "^1.19.0",
     "core-js": "^3.15.2",
     "css-loader": "^6.2.0",
     "d3": "^7.0.0",
