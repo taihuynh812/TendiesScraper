@@ -20,8 +20,9 @@ companyProfiles.then(data => {
 
     details.append('div').text(d => {return "Company: " + d.name}).attr("class", "company-name")
     details.append('div').text(d => {return "Ticker: " + d.ticker}).attr("class", "company-ticker")
-    details.append('div').text(d => {return "Market Capitalization: " + d.marketCapitalization}).attr("class", "company-markcap")
+    details.append('div').text(d => {return "Market Capitalization: " + (d.marketCapitalization).toLocaleString() + " million"}).attr("class", "company-markcap")
     details.append('div').text(d => {return "Industry: " + d.finnhubIndustry}).attr("class", "company-industry")
     details.append('div').text(d => {return "Exchange: " + d.exchange}).attr("class", "company-exchange")
+    details.append('div').text(d => {return "Country: " + d.country}).attr("class", "company-country")
 
 })
