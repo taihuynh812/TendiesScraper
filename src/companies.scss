@@ -1,16 +1,19 @@
 
 #companies-container{
-    
+
+}
+.company-container{
+    border: 1px yellow solid;
 }
 
-.company-container{
+.company-profile{
     display: block;
     border: 1px rgb(140, 140, 140) solid;
     border-radius: 5px;
     min-height: 300px;
     max-height: 350px;
     width: 350px;
-    margin-left: 13%;
+    margin-left: 5%;
     margin-top: 50px;
     margin-bottom: 50px;
     background-color: rgb(9, 37, 67);

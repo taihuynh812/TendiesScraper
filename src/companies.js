@@ -16,13 +16,19 @@ companyProfiles.then(data => {
                 .append("div")
                     .attr('class', 'company-container')
 
-    const details = d3.selectAll('.company-container').data(sorted)    
+    const container = d3.selectAll('.company-container').data(sorted)
 
-    details.append('div').text(d => {return "Company: " + d.name}).attr("class", "company-name")
-    details.append('div').text(d => {return "Ticker: " + d.ticker}).attr("class", "company-ticker")
-    details.append('div').text(d => {return "Market Capitalization: " + (d.marketCapitalization).toLocaleString() + " million"}).attr("class", "company-markcap")
-    details.append('div').text(d => {return "Industry: " + d.finnhubIndustry}).attr("class", "company-industry")
-    details.append('div').text(d => {return "Exchange: " + d.exchange}).attr("class", "company-exchange")
-    details.append('div').text(d => {return "Country: " + d.country}).attr("class", "company-country")
+    container.append("div").attr("class", "company-profile")    
+    container.append("div").attr("class", "company-recommend")    
+
+    
+    const profile = d3.selectAll('.company-profile').data(sorted)
+    profile.append('div').text(d => {return "Company: " + d.name}).attr("class", "company-name")
+    profile.append('div').text(d => {return "Ticker: " + d.ticker}).attr("class", "company-ticker")
+    profile.append('div').text(d => {return "Market Capitalization: " + (d.marketCapitalization).toLocaleString() + " million"}).attr("class", "company-markcap")
+    profile.append('div').text(d => {return "Industry: " + d.finnhubIndustry}).attr("class", "company-industry")
+    profile.append('div').text(d => {return "Exchange: " + d.exchange}).attr("class", "company-exchange")
+    profile.append('div').text(d => {return "Country: " + d.country}).attr("class", "company-country")
+
 
 })
