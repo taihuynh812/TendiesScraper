@@ -1,5 +1,5 @@
 import { sortedTickers } from '../fetch_tickers';
-
+import './companies.js';
 
 sortedTickers.then(data => {
     // console.log(data)
