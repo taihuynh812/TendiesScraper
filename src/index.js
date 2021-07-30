@@ -2,7 +2,7 @@ import { sortedTickers } from '../fetch_tickers';
 
 
 sortedTickers.then(data => {
-    console.log(data)
+    // console.log(data)
     const width = 1500
     const height = 600   
     const margin = {top: 50, bottom: 50, left: 50, right: 50}

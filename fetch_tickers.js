@@ -1,4 +1,5 @@
 import fetch from 'node-fetch'
+import { fetchTickerAction } from './src/action/fetch_ticker';
 
 const todayTime = Math.round(new Date().getTime() / 1000)
 function yesterdayTime(){
@@ -14,10 +15,11 @@ function sortTickers(){
     return sortedTickers
 }
 
+
 let excludeWords = ["COVID", "DD", "NO", "YES", "WSB", "SHORT", "NYC", "FLOAT", "LONG", "OTM", "ITM", "DFV", "BUY", "SELL", "STOCK", "YTD", "GREAT", "BUT", "WHEN", 
         "YOU", "WILL", "LOTS", "OF", "LOL", "USA", "YOLO", "OP", "STOP", "TO", "THE", "MOON", "THIS", "NOT", "GAIN", "LOSS", "US", "TV", "RIP", "SEC", "CHINA",
-        "JPOW", "CEO", "VOTE", "BITCH", "LIKE", 'WTF', "MINOR", "IPO", "APE", "SAVE", "SPAC", "DO", "DONT", "PLACE", "YOUR", "MY", "MINE", "PORN", "WEDGE",
-        "JOB", "IN", "OUT", "JAIL", "AND", "IRL", "IS", "ETF", "DOW", "DIA", "MOVE", "CNN", "THANK", "FUCK", "FK", "GAMMA", "LETS", "IT", "THEY"
+        "JPOW", "CEO", "VOTE", "BITCH", "LIKE", 'WTF', "MINOR", "IPO", "APE", "SAVE", "SPAC", "DO", "DONT", "PLACE", "YOUR", "MY", "MINE", "PORN", "WEDGE", "EV",
+        "JOB", "IN", "OUT", "JAIL", "AND", "IRL", "IS", "ETF", "DOW", "DIA", "MOVE", "CNN", "THANK", "FUCK", "FK", "GAMMA", "LETS", "IT", "THEY", "ETORO"
         ].reduce((acc, a) => (acc[a]="placeholder", acc), {})
 
 
@@ -97,4 +99,18 @@ async function fetchTickers(cb){
     return cb()
 }
 
+async function fetchCompanies(){
+    const sorted = await fetchTickers(sortTickers)
+    const companies = []
+    const tickers = [];
+    sorted.map(company => {
+        tickers.push(fetchTickerAction(company.ticker))
+    })
+    const promises = await Promise.all(tickers)
+    promises.forEach(promise => companies.push(promise))
+    return companies
+}
+
+
 export const sortedTickers = fetchTickers(sortTickers)
+export const companyProfiles = fetchCompanies()
