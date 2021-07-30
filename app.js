@@ -34,4 +34,11 @@ app.get('/tickerinfo/:ticker', (req,res, next) => {
     });
 })
 
-
+app.get('/tickertrend/:ticker', (req,res, next) => {
+    finnhubClient.recommendationTrends(req.params.ticker, (error, data, response) => {
+        if (error){
+            return error
+        }
+        res.json(data)
+    });
+})

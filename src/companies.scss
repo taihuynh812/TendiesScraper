@@ -3,19 +3,18 @@
 
 }
 .company-container{
-    border: 1px yellow solid;
+    display: flex;
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
 
 .company-profile{
-    display: block;
     border: 1px rgb(140, 140, 140) solid;
     border-radius: 5px;
     min-height: 300px;
     max-height: 350px;
     width: 350px;
-    margin-left: 5%;
-    margin-top: 50px;
-    margin-bottom: 50px;
+    margin-left: 1%;
     background-color: rgb(9, 37, 67);
     color: rgb(167, 179, 198);
     
@@ -29,11 +28,16 @@
         font-weight: bolder;
         font-size: 18px;
     }
+}
 
 
-
-
-
-
-
+.company-recommend{
+    border: 1px rgb(140, 140, 140) solid;
+    border-radius: 5px;
+    min-height: 300px;
+    max-height: 350px;
+    width: 600px;
+    margin-left: 10px;
+    background-color: rgb(9, 37, 67);
+    color: rgb(167, 179, 198);
 }

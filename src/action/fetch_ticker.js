@@ -1,13 +1,6 @@
 const axios = require('axios')
 
-// export async function fetchTickerAction(ticker){
-//     const profile = await axios.get(`/tickerinfo/${ticker}`)
-//     console.log(profile)
-//     return profile
-//         .catch(err => console.log(err))
-// }
-
-export const fetchTickerAction = async(ticker) => {
+export const fetchProfile = async(ticker) => {
     try{
         const profile = await axios.get(`/tickerinfo/${ticker}`)
         return profile.data
@@ -16,3 +9,11 @@ export const fetchTickerAction = async(ticker) => {
     }
 }
 
+export const fetchRecommend = async(ticker) => {
+    try{
+        const profile = await axios.get(`/tickertrend/${ticker}`)
+        return profile.data
+    } catch(err){
+        console.log(err)
+    }
+}
