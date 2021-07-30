@@ -1,8 +1,35 @@
 
 #companies-container{
-    border: 1px white solid
 }
 
 .company-container{
-    border: 1px yellow solid;
+    display: block;
+    border: 1px rgb(140, 140, 140) solid;
+    border-radius: 5px;
+    min-height: 300px;
+    max-height: 350px;
+    width: 350px;
+    margin-left: 13%;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    background-color: rgb(9, 37, 67);
+    color: rgb(167, 179, 198);
+    
+    > div {
+        padding: 10px;
+    }
+
+    .company-name{
+        border-bottom: 1px solid rgb(187, 187, 187);
+        padding: 20px 0px;
+        font-weight: bolder;
+        font-size: 18px;
+    }
+
+
+
+
+
+
+
 }
