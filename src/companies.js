@@ -56,13 +56,6 @@ companyProfiles.then(data => {
             ]
         }
     })
-    // const new_data = recommends.map(d => [
-    //             { key: 'Strong Sell', value: d.strongSell ? d.strongSell : 0},
-    //             { key: 'Sell', value: d.sell ? d.sell : 0},
-    //             { key: 'Hold', value: d.hold ? d.hold : 0},
-    //             { key: 'Buy', value: d.buy ? d.buy : 0},
-    //             { key: 'Strong Buy', value: d.strongBuy ? d.strongBuy : 0},
-    //         ])
 
     var color = d3.scaleOrdinal()
         .domain(["Strong Sell", "Sell", "Hold", "Buy", "Strong Buy"])
@@ -74,6 +67,7 @@ companyProfiles.then(data => {
         .innerRadius(0)
         .outerRadius(radius)
 
+    // bind our data to the divs. add a group to each div.
     const recommendSvg = d3.selectAll('.company-recommend')
         .data(new_data)
         .append('svg')
@@ -82,6 +76,8 @@ companyProfiles.then(data => {
         .append('g')
             .attr('transform', `translate(${width / 2},${height / 2})`);
 
+    // draw the pie chart in each group
+    // by creating one path for each slice
     recommendSvg.selectAll('path')
         .data(d => pie(d))
         .join('path')
