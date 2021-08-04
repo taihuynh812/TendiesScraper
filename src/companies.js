@@ -1,3 +1,4 @@
+import { pie } from "d3";
 import { companyProfiles } from "../fetch_tickers";
 import './companies.scss'
 
@@ -35,41 +36,58 @@ companyProfiles.then(data => {
 
     var margin = 20, width = 250, height = 250
     var radius = Math.min(width, height) / 2 - margin
-    
-    console.log(recommends)
-    recommends.forEach(data => {
-        let dataset
-        if (data.strongSell){
-            dataset = {strongSell: data.strongSell, sell: data.sell, hold: data.hold, buy: data.buy, strongBuy: data.strongBuy}
+
+    const new_data = recommends.map(function(d){
+        if (d){
+            return [
+                { key: 'Strong Sell', value: d.strongSell},
+                { key: 'Sell', value: d.sell},
+                { key: 'Hold', value: d.hold},
+                { key: 'Buy', value: d.buy},
+                { key: 'Strong Buy', value: d.strongBuy},
+            ]
+        } else {
+            return [
+                { key: 'Strong Sell', value: 0},
+                { key: 'Sell', value: 0},
+                { key: 'Hold', value: 0},
+                { key: 'Buy', value: 0},
+                { key: 'Strong Buy', value: 0},
+            ]
         }
-        const svg = d3.selectAll(".company-recommend")
-            .append("svg")
-                .attr("width", width)
-                .attr("height", height)
-            .append("g")
-                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
-        
-        var color = d3.scaleOrdinal()
-            .domain(dataset)
-            .range(["#570e00", "#ff2a00", "#ffff00", "#00ff08", "#00570c"])
-
-        var pie = d3.pie()
-            .value(function(d) {console.log(d)
-                return d.value; })
-        var data_ready = pie(d3.entries(dataset))
-
-        svg
-            .selectAll('whatever')
-            .data(data_ready)
-            .enter()
-            .append('path')
-            .attr('d', d3.arc()
-                .innerRadius(0)
-                .outerRadius(radius)
-            )
-            .attr('fill', function(d){ return(color(d.data.key)) })
-            .attr("stroke", "black")
-            .style("stroke-width", "2px")
-            .style("opacity", 0.7)
     })
+    // const new_data = recommends.map(d => [
+    //             { key: 'Strong Sell', value: d.strongSell ? d.strongSell : 0},
+    //             { key: 'Sell', value: d.sell ? d.sell : 0},
+    //             { key: 'Hold', value: d.hold ? d.hold : 0},
+    //             { key: 'Buy', value: d.buy ? d.buy : 0},
+    //             { key: 'Strong Buy', value: d.strongBuy ? d.strongBuy : 0},
+    //         ])
+
+    var color = d3.scaleOrdinal()
+        .domain(["Strong Sell", "Sell", "Hold", "Buy", "Strong Buy"])
+        .range(["#570e00", "#ff2a00", "#ffff00", "#00ff08", "#00570c"])
+
+    var pie = d3.pie().value(d => d.value)
+
+    var arc = d3.arc()
+        .innerRadius(0)
+        .outerRadius(radius)
+
+    const recommendSvg = d3.selectAll('.company-recommend')
+        .data(new_data)
+        .append('svg')
+            .attr('width', width)
+            .attr('height', height)
+        .append('g')
+            .attr('transform', `translate(${width / 2},${height / 2})`);
+
+    recommendSvg.selectAll('path')
+        .data(d => pie(d))
+        .join('path')
+            .attr('d', arc)
+            .attr('fill', d => color(d.data.key))
+            .attr('stroke', 'black')
+            .attr('stroke-width', '2px')
+            .attr('opacity', 0.7);
 })
