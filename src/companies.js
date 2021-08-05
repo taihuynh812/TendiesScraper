@@ -1,4 +1,3 @@
-import { pie } from "d3";
 import { companyProfiles } from "../fetch_tickers";
 import './companies.scss'
 
@@ -34,7 +33,7 @@ companyProfiles.then(data => {
     profile.append('div').text(d => {return "Country: " + d.country}).attr("class", "company-country")
 
 
-    var margin = 20, width = 250, height = 250
+    var margin = 20, width = 500, height = 250
     var radius = Math.min(width, height) / 2 - margin
 
     const new_data = recommends.map(function(d){
@@ -59,7 +58,7 @@ companyProfiles.then(data => {
 
     var color = d3.scaleOrdinal()
         .domain(["Strong Sell", "Sell", "Hold", "Buy", "Strong Buy"])
-        .range(["#570e00", "#ff2a00", "#ffff00", "#00ff08", "#00570c"])
+        .range(["#C50000", "#FF4E4E", "#ffff00", "#63FF57", "#39B500"])
 
     var pie = d3.pie().value(d => d.value)
 
@@ -73,8 +72,11 @@ companyProfiles.then(data => {
         .append('svg')
             .attr('width', width)
             .attr('height', height)
+            .style('padding-top', "20px")
+            .style("color", "white")
         .append('g')
-            .attr('transform', `translate(${width / 2},${height / 2})`);
+            .attr('transform', `translate(${width / 2},${height / 2})`)
+            .attr('class', "pie-chart")
 
     // draw the pie chart in each group
     // by creating one path for each slice
@@ -86,4 +88,35 @@ companyProfiles.then(data => {
             .attr('stroke', 'black')
             .attr('stroke-width', '2px')
             .attr('opacity', 0.7);
+
+    recommendSvg.append("circle")
+        .attr("cx", 0)
+        .attr("cy", 0)
+        .attr("r", 60)
+        .attr("fill", "#092543");
+
+    const legendG = recommendSvg.selectAll('.legend')
+        .data(d => d)
+        .enter().append("g")
+        .attr("transform", function(d,i){
+            return "translate(" + (width - 370) + "," + ((i * 2) * 10) + ")";
+        })
+        .attr("class", "legend")
+        .style("color", "white")
+
+        
+    legendG.append("rect")
+        .attr("width", 10)
+        .attr("height", 10)
+        .attr("fill", function(d, i){
+            return color(i)
+        })
+        .attr("class", "legend-box")
+
+    legendG.append('text')
+        .text(d => d.key + ": " + d.value)
+        .attr('x', 10)
+        .attr('y', 11)
+        .style("fill", "white")
+        .attr("class", "legend-text")
 })
