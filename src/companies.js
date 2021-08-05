@@ -78,6 +78,9 @@ companyProfiles.then(data => {
             .attr('transform', `translate(${width / 2},${height / 2})`)
             .attr('class', "pie-chart")
 
+    var span = d3.select('body').append('span')
+        .attr("class", "tooltip-donut")
+        .style("opacity", 0)
     // draw the pie chart in each group
     // by creating one path for each slice
     recommendSvg.selectAll('path')
@@ -86,14 +89,31 @@ companyProfiles.then(data => {
             .attr('d', arc)
             .attr('fill', d => color(d.data.key))
             .attr('stroke', 'black')
-            .attr('stroke-width', '2px')
-            .attr('opacity', 0.7);
+            .attr('stroke-width', '1px')
+            .attr('opacity', 0.7)
+            .on("mouseover", function(d) {
+                d3.select(event.currentTarget).transition()
+                    .duration("50")
+                    .attr("opacity", ".85")
+                span.transition().duration(50).style("opacity", "1")
+                let displayText = d.data.key + ": " + d.data.value
+                span.html(displayText)
+                    .style('left', (d3.event.pageX + 5) + "px")
+                    .style('top', (d3.event.pageY - 5) + "px")
+            })
+            .on("mouseout", function(d){
+                d3.select(event.currentTarget).transition()
+                    .duration("50")
+                    .attr("opacity", "1")
+                span.transition().duration(50).style("opacity", "0")
+            })
 
     recommendSvg.append("circle")
         .attr("cx", 0)
         .attr("cy", 0)
         .attr("r", 60)
         .attr("fill", "#092543");
+
 
     const legendG = recommendSvg.selectAll('.legend')
         .data(d => d)
@@ -114,7 +134,7 @@ companyProfiles.then(data => {
         .attr("class", "legend-box")
 
     legendG.append('text')
-        .text(d => d.key + ": " + d.value)
+        .text(d => d.key)
         .attr('x', 10)
         .attr('y', 11)
         .style("fill", "white")
