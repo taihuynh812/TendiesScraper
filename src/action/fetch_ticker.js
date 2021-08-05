@@ -17,3 +17,12 @@ export const fetchRecommend = async(ticker) => {
         console.log(err)
     }
 }
+
+export const fetchPrice = async(ticker) => {
+    try{
+        const profile = await axios.get(`/price/${ticker}`)
+        return profile.data
+    } catch(err){
+        console.log(err)
+    }
+}
