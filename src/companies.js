@@ -22,7 +22,7 @@ companyProfiles.then(data => {
 
     container.append("div").attr("class", "company-profile")    
     container.append("div").attr("class", "company-recommend")    
-
+    container.append("div").attr("class", "company-price")  
     
     const profile = d3.selectAll('.company-profile').data(sorted)
     profile.append('div').text(d => {return "Company: " + d.name}).attr("class", "company-name")
@@ -33,7 +33,7 @@ companyProfiles.then(data => {
     profile.append('div').text(d => {return "Country: " + d.country}).attr("class", "company-country")
 
 
-    var margin = 20, width = 500, height = 250
+    var margin = 20, width = 500, height = 300
     var radius = Math.min(width, height) / 2 - margin
 
     const new_data = recommends.map(function(d){

@@ -1,5 +1,5 @@
 import fetch from 'node-fetch'
-import { fetchProfile, fetchRecommend } from './src/action/fetch_ticker';
+import { fetchProfile, fetchRecommend, fetchPrice } from './src/action/fetch_ticker';
 
 const todayTime = Math.round(new Date().getTime() / 1000)
 function yesterdayTime(){
@@ -105,7 +105,7 @@ async function fetchCompanies(){
     const companies = []
     const tickers = [];
     sorted.map((company, i) => {
-        tickers.push([fetchProfile(company.ticker), fetchRecommend(company.ticker)])
+        tickers.push([fetchProfile(company.ticker), fetchRecommend(company.ticker), fetchPrice(company.ticker)])
     })
     const promiseAll = await Promise.all(
         tickers.map(ticker => {
@@ -119,6 +119,8 @@ async function fetchCompanies(){
     })
     return companies
 }
+
+
 
 export const sortedTickers = fetchTickers(sortTickers)
 export const companyProfiles = fetchCompanies()

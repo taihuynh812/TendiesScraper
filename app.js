@@ -61,17 +61,13 @@ const yesterday = getYesterdaysDate()
 const aWeekAgo = sevenDaysAgo()
 
 app.get("/price/:ticker", (req, res, next) => {
-    console.log("inside test")
     const url = `http://api.marketstack.com/v1/eod?access_key=${marketstackAPI}&symbols=${req.params.ticker}&date_from=${aWeekAgo}&date_to=${yesterday}`
-    debugger
     axios.get(url)
         .then(response => {
-            debugger
             res.json(response.data)
         })
         .catch(err => {
-            debugger
-            res.secn(err)
+            res.send(err)
         });
 })
 
