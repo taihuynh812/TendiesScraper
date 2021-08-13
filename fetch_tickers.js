@@ -1,3 +1,4 @@
+import { timeout } from 'd3';
 import fetch from 'node-fetch'
 import { fetchProfile, fetchRecommend, fetchPrice } from './src/action/fetch_ticker';
 
@@ -102,11 +103,19 @@ async function fetchTickers(cb){
 
 async function fetchCompanies(){
     const sorted = await fetchTickers(sortTickers)
+    const firstFive = sorted.slice(0, 5)
+    const lastFive = sorted.slice(5)
+    const tickers = []
     const companies = []
-    const tickers = [];
-    sorted.map((company, i) => {
-        tickers.push([fetchProfile(company.ticker), fetchRecommend(company.ticker), fetchPrice(company.ticker)])
+
+    firstFive.map((company, i) => {
+        tickers.push([fetchProfile(company.ticker), fetchRecommend(company.ticker)])
     })
+    await new Promise(resolve => {setTimeout(resolve, 1000)})
+    lastFive.map((company, i) => {
+        tickers.push([fetchProfile(company.ticker), fetchRecommend(company.ticker)])
+    })
+
     const promiseAll = await Promise.all(
         tickers.map(ticker => {
             return Promise.all(ticker)

@@ -1,16 +1,13 @@
 import { companyProfiles } from "../fetch_tickers";
 import './companies.scss'
-import data from '../test'
 
-companyProfiles.then(eaeea3 => {
+companyProfiles.then(data => {
     const sorted = []
     const recommends = []
-    const prices = []
     for(let i = data.length - 1; i >= 0; i--){
         if (data[i][0].name){
             sorted.push(data[i][0])
             recommends.push(data[i][1][0])
-            prices.push(data[i][2])
         }
     }
 
@@ -22,6 +19,7 @@ companyProfiles.then(eaeea3 => {
                     .attr('class', 'company-container')
 
     const container = d3.selectAll('.company-container').data(sorted)
+
     container.append("div").attr("class", "company-profile")    
     container.append("div").attr("class", "company-recommend")    
     container.append("div").attr("class", "company-price")  
@@ -35,8 +33,8 @@ companyProfiles.then(eaeea3 => {
     profile.append('div').text(d => {return "Country: " + d.country}).attr("class", "company-country")
 
 
-    var margin = 20, recommendWidth = 500 ,height = 300
-    var radius = Math.min(recommendWidth, height) / 2 - margin
+    var margin = 20, width = 500, height = 300
+    var radius = Math.min(width, height) / 2 - margin
 
     const new_data = recommends.map(function(d){
         if (d){
@@ -72,18 +70,17 @@ companyProfiles.then(eaeea3 => {
     const recommendSvg = d3.selectAll('.company-recommend')
         .data(new_data)
         .append('svg')
-            .attr('width', recommendWidth)
+            .attr('width', width)
             .attr('height', height)
             .style('padding-top', "20px")
             .style("color", "white")
         .append('g')
-            .attr('transform', `translate(${recommendWidth / 2},${height / 2})`)
+            .attr('transform', `translate(${width / 2},${height / 2})`)
             .attr('class', "pie-chart")
 
     var span = d3.select('body').append('span')
         .attr("class", "tooltip-donut")
         .style("opacity", 0)
-
     // draw the pie chart in each group
     // by creating one path for each slice
     recommendSvg.selectAll('path')
@@ -122,7 +119,7 @@ companyProfiles.then(eaeea3 => {
         .data(d => d)
         .enter().append("g")
         .attr("transform", function(d,i){
-            return "translate(" + (recommendWidth - 340) + "," + ((i * 2) * 10) + ")";
+            return "translate(" + (width - 370) + "," + ((i * 2) * 10) + ")";
         })
         .attr("class", "legend")
         .style("color", "white")
@@ -142,20 +139,4 @@ companyProfiles.then(eaeea3 => {
         .attr('y', 11)
         .style("fill", "white")
         .attr("class", "legend-text")
-
-    
-    var priceMargin = {top: 10, right: 30, bottom: 30, left: 60},
-        priceWidth = 460 - priceMargin.left - priceMargin.right,
-        priceHeight = 400 - priceMargin.top - priceMargin.bottom;
-
-    var priceSvg = d3.selectAll(".company-price")
-        .data(prices, function(d){return d.data})
-        .append("svg")
-            .attr("width", priceWidth + priceMargin.left + priceMargin.right)
-            .attr("height", priceHeight + priceMargin.top + priceMargin.bottom)
-        .append("g")
-            .attr("transform", "translate(" + priceMargin.left + "," + priceMargin.top + ")")
-            
-    
-    
 })
