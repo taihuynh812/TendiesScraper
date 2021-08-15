@@ -143,19 +143,23 @@ companyProfiles.then(eaeea3 => {
         .style("fill", "white")
         .attr("class", "legend-text")
 
-    
+    console.log(prices)
+
     var priceMargin = {top: 10, right: 30, bottom: 30, left: 60},
         priceWidth = 460 - priceMargin.left - priceMargin.right,
         priceHeight = 400 - priceMargin.top - priceMargin.bottom;
 
     var priceSvg = d3.selectAll(".company-price")
-        .data(prices, function(d){return d.data})
+        .data(prices, function(d){
+            return d.data
+        })
         .append("svg")
             .attr("width", priceWidth + priceMargin.left + priceMargin.right)
             .attr("height", priceHeight + priceMargin.top + priceMargin.bottom)
         .append("g")
             .attr("transform", "translate(" + priceMargin.left + "," + priceMargin.top + ")")
-            
-    
+                
+    priceSvg.append("g")
+        .data(d => console.log(d))
     
 })
