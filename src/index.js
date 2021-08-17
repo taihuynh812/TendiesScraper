@@ -74,8 +74,10 @@ sortedTickers.then(data => {
     svg.append("g").call(xAxis)
 
 
-
-
+    const header = d3.select("#companies-container-headers")
+    header.append("div").attr("class", "company-profile-header").text("Company")
+    header.append("div").attr("class", "company-recommend-header").text("Stock Recommendations")
+    header.append("div").attr("class", "company-price-header").text("Past 5 days Stock Performance")
 
 
 

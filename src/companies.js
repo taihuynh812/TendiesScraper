@@ -24,7 +24,8 @@ companyProfiles.then(eaeea3 => {
     const container = d3.selectAll('.company-container').data(sorted)
     container.append("div").attr("class", "company-profile")    
     container.append("div").attr("class", "company-recommend")    
-    container.append("div").attr("class", "company-price")  
+    container.append("div").attr("class", "company-price")    
+
     
     const profile = d3.selectAll('.company-profile').data(sorted)
     profile.append('div').text(d => {return "Company: " + d.name}).attr("class", "company-name")
@@ -143,23 +144,62 @@ companyProfiles.then(eaeea3 => {
         .style("fill", "white")
         .attr("class", "legend-text")
 
-    console.log(prices)
+    d3.selectAll(".company-price")
+        .data(prices)
+        .each(lineChart);
 
-    var priceMargin = {top: 10, right: 30, bottom: 30, left: 60},
-        priceWidth = 460 - priceMargin.left - priceMargin.right,
-        priceHeight = 400 - priceMargin.top - priceMargin.bottom;
+    function lineChart({data}){
+        const priceMargin = {top: 10, right: 30, bottom: 30, left: 60};
+        const priceWidth = 1000 - priceMargin.left - priceMargin.right;  
+        const priceHeight = 400 - priceMargin.top - priceMargin.bottom;
+        
+        const svg = d3.select(this)
+            .append('svg')
+                .attr("width", priceWidth + priceMargin.left + priceMargin.right)
+                .attr("height", priceHeight + priceMargin.top + priceMargin.bottom)
+            .append("g")
+                .attr("transform", `translate(${priceMargin.left},${priceMargin.top})`);
+        
+        const parseDate = d3.timeParse('%Y-%m-%dT%H:%M:%S%Z');
 
-    var priceSvg = d3.selectAll(".company-price")
-        .data(prices, function(d){
-            return d.data
-        })
-        .append("svg")
-            .attr("width", priceWidth + priceMargin.left + priceMargin.right)
-            .attr("height", priceHeight + priceMargin.top + priceMargin.bottom)
-        .append("g")
-            .attr("transform", "translate(" + priceMargin.left + "," + priceMargin.top + ")")
-                
-    priceSvg.append("g")
-        .data(d => console.log(d))
+        const x = d3.scaleTime()
+            .domain(d3.extent(data, d => parseDate(d.date)))
+            .range([0, priceWidth]);
+
+        const y = d3.scaleLinear()
+            .domain(d3.extent(data, d => d.close))
+            .range([priceHeight, 0]);
+
+        const line = d3.line()
+            .x(d => x(parseDate(d.date)))
+            .y(d => y(d.close))
+
+        console.log(data)
+        if (data[0].close < data[data.length - 1].close){
+            svg.append("path")
+                .attr("fill", "none")
+                .attr("stroke", "rgba(255, 31, 31)")
+                .attr('d', line(data));
+        } else {
+            svg.append("path")
+                .attr("fill", "none")
+                .attr("stroke", "rgba(19, 255, 19)")
+                .attr('d', line(data));
+        }
+
+
+        svg.append('g')
+            .call(d3.axisLeft(y))
+            .attr("class", "d3-axes")
+
+        svg.append('g')
+            .attr("transform", `translate(0, ${priceHeight})`)
+            .call(d3.axisBottom(x))
+            .attr("class", "d3-axes")
+    }
+
+
+
+    
     
 })

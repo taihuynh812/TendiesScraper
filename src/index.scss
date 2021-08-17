@@ -44,3 +44,30 @@ span.tooltip-donut {
     font-size: 18px;
 }
 
+
+#companies-container-headers{
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto;
+    max-width: 2100px;
+    margin-top: 2%;
+    font-size: 26px;
+    font-weight: bolder;
+    height: 50px;
+    color: rgba($color: #4b75ff, $alpha: 1.0);
+    border-bottom: 1px rgb(165, 165, 165) solid;
+
+    .company-profile-header{
+        min-width: 350px;
+        margin-left: 1%;
+    }
+
+    .company-recommend-header{
+        min-width: 500px;
+        margin-left: 10px;
+    }
+
+    .company-price-header{
+        min-width: 1000px;
+    }
+}
