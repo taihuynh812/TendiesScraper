@@ -78,7 +78,7 @@ companyProfiles.then(eaeea3 => {
             .style('padding-top', "20px")
             .style("color", "white")
         .append('g')
-            .attr('transform', `translate(${recommendWidth / 2},${height / 2})`)
+            .attr('transform', `translate(${recommendWidth / 3},${height / 2})`)
             .attr('class', "pie-chart")
 
     var span = d3.select('body').append('span')
