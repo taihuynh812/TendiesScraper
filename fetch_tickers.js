@@ -1,4 +1,3 @@
-import { timeout } from 'd3';
 import fetch from 'node-fetch'
 import { fetchProfile, fetchRecommend, fetchPrice } from './src/action/fetch_ticker';
 
@@ -21,7 +20,7 @@ let excludeWords = ["COVID", "DD", "NO", "YES", "WSB", "SHORT", "NYC", "FLOAT", 
         "YOU", "WILL", "LOTS", "OF", "LOL", "USA", "YOLO", "OP", "STOP", "TO", "THE", "MOON", "THIS", "NOT", "GAIN", "LOSS", "US", "TV", "RIP", "SEC", "CHINA",
         "JPOW", "CEO", "VOTE", "BITCH", "LIKE", 'WTF', "MINOR", "IPO", "APE", "SAVE", "SPAC", "DO", "DONT", "PLACE", "YOUR", "MY", "MINE", "PORN", "WEDGE", "EV",
         "JOB", "IN", "OUT", "JAIL", "AND", "IRL", "IS", "ETF", "DOW", "DIA", "MOVE", "CNN", "THANK", "FUCK", "FK", "GAMMA", "LETS", "IT", "THEY", "ETORO", "TRUST",
-        "FOMO", "RAPE", "RAPED", "PUT", "CALL", "COVER", "BOYS"
+        "FOMO", "RAPE", "RAPED", "PUT", "CALL", "COVER", "BOYS", "MOASS", "GONNA", "FOR"
         ].reduce((acc, a) => (acc[a]="placeholder", acc), {})
 
 
@@ -109,11 +108,11 @@ async function fetchCompanies(){
     const companies = []
 
     firstFive.map((company, i) => {
-        tickers.push([fetchProfile(company.ticker), fetchRecommend(company.ticker)])
+        tickers.push([fetchProfile(company.ticker), fetchRecommend(company.ticker), fetchPrice(company.ticker)])
     })
     await new Promise(resolve => {setTimeout(resolve, 1000)})
     lastFive.map((company, i) => {
-        tickers.push([fetchProfile(company.ticker), fetchRecommend(company.ticker)])
+        tickers.push([fetchProfile(company.ticker), fetchRecommend(company.ticker), fetchPrice(company.ticker)])
     })
 
     const promiseAll = await Promise.all(
