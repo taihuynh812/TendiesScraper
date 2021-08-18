@@ -8,16 +8,19 @@
     margin-bottom: 30px;
     height: 400px;
     align-items: center;
+    background-color: rgb(9, 37, 67);
+    border-radius: 8px;
+    border: 1px rgb(140, 140, 140) solid;
+    padding: 10px;
+
 }
 
 .company-profile{
-    border: 1px rgb(140, 140, 140) solid;
     border-radius: 5px;
     min-height: 300px;
     max-height: 350px;
     min-width: 350px;
     margin-left: 1%;
-    background-color: rgb(9, 37, 67);
     color: rgb(167, 179, 198);
     
     > div {
@@ -34,21 +37,29 @@
 
 
 .company-recommend{
-    border: 1px rgb(140, 140, 140) solid;
     border-radius: 5px;
     min-height: 300px;
     max-height: 350px;
     min-width: 500px;
     margin-left: 10px;
-    background-color: rgb(9, 37, 67);
     color: rgb(167, 179, 198);
 }
 
 .company-price{
-
+    border: 1px yellow solid;
 }
 
 .d3-axes{
     color: rgb(232, 232, 232);
     font-size: 14px;
+}
+
+.overlay {
+    fill: none;
+    pointer-events: all;
+}
+
+.focus circle {
+    fill: none;
+    stroke: steelblue;
 }

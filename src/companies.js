@@ -148,8 +148,9 @@ companyProfiles.then(eaeea3 => {
         .data(prices)
         .each(lineChart);
 
+    
     function lineChart({data}){
-        const priceMargin = {top: 10, right: 30, bottom: 30, left: 60};
+        const priceMargin = {top: 10, right: 60, bottom: 30, left: 60};
         const priceWidth = 1000 - priceMargin.left - priceMargin.right;  
         const priceHeight = 400 - priceMargin.top - priceMargin.bottom;
         
@@ -160,33 +161,49 @@ companyProfiles.then(eaeea3 => {
             .append("g")
                 .attr("transform", `translate(${priceMargin.left},${priceMargin.top})`);
         
-        const parseDate = d3.timeParse('%Y-%m-%dT%H:%M:%S%Z');
+
+        const parseDate = d3.timeParse('%Y-%m-%dT%H:%M:%S%Z')
+            
+        var highPrice  
+        var lowPrice
+
+        function findPrice(data){
+            let low = data[0].close
+            let high = data[0].close
+            data.forEach(price => {
+                if (price.close < low) low = price.close
+                if (price.close > high) high = price.close
+            })
+            highPrice = high
+            lowPrice = low
+        }
+        findPrice(data)
 
         const x = d3.scaleTime()
             .domain(d3.extent(data, d => parseDate(d.date)))
             .range([0, priceWidth]);
 
         const y = d3.scaleLinear()
-            .domain(d3.extent(data, d => d.close))
+            .domain([lowPrice - 0.5, highPrice + 0.5])
             .range([priceHeight, 0]);
 
         const line = d3.line()
             .x(d => x(parseDate(d.date)))
             .y(d => y(d.close))
 
-        console.log(data)
         if (data[0].close < data[data.length - 1].close){
             svg.append("path")
                 .attr("fill", "none")
                 .attr("stroke", "rgba(255, 31, 31)")
-                .attr('d', line(data));
+                .attr('d', line(data))
+                .style("stroke-width", "2px")
         } else {
             svg.append("path")
                 .attr("fill", "none")
                 .attr("stroke", "rgba(19, 255, 19)")
-                .attr('d', line(data));
+                .attr('d', line(data))
+                .style("stroke-width", "2px")
         }
-
 
         svg.append('g')
             .call(d3.axisLeft(y))
@@ -196,10 +213,42 @@ companyProfiles.then(eaeea3 => {
             .attr("transform", `translate(0, ${priceHeight})`)
             .call(d3.axisBottom(x))
             .attr("class", "d3-axes")
+
+        const bisectDate = d3.bisector(function(d) { return d.date; }).left,
+            formatValue = d3.format(",.2f"),
+            formatCurrency = function(d) { return "$" + formatValue(d); };
+
+        const focus = svg.append('g')
+            .attr('class', 'focus')
+            .style('display', 'none')
+    
+        focus.append('circle')
+            .attr('r', 4.5);
+
+        focus.append('text')
+            .attr("class", "focus-text")
+            .attr("fill", "white")
+            .attr('x', 9)
+            .attr('dy', '.35em');
+
+        svg.append("rect")
+            .attr("class", "overlay")
+            .attr("width", priceWidth)
+            .attr("height", priceHeight)
+            .on("mouseover", function() { focus.style("display", null); })
+            .on("mouseout", function() { focus.style("display", "none"); })
+            .on("mousemove", mousemove);
+
+        function mousemove() {
+            var x0 = x.invert(d3.mouse(this)[0]),
+                i = bisectDate(data, x0, 1),
+                d0 = data[i - 1],
+                d1 = data[i],
+                d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+                console.log(i)
+            focus.attr("transform", "translate(" + x(parseDate(d.date)) + "," + y(d.close) + ")");
+            focus.select("text").text(formatCurrency(d.close));
+        }
     }
 
-
-
-    
-    
 })
