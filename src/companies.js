@@ -1,8 +1,8 @@
 import { companyProfiles } from "../fetch_tickers";
 import './companies.scss'
-import data from '../test'
+import test from '../test'
 
-companyProfiles.then(a33t3ta3 => {
+companyProfiles.then(data => {
     const sorted = []
     const recommends = []
     const prices = []
