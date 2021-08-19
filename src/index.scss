@@ -32,7 +32,7 @@ body{
         padding-right: 130px
     }
 
-    .information{
+    #information{
         font-size: 40px;
         color: white;
 
@@ -63,9 +63,6 @@ body{
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
-    position: sticky;
-    position: -webkit-sticky;
-    top: 0;
     .d3-axes{
         color: rgb(232, 232, 232);
     }
@@ -99,7 +96,7 @@ span.tooltip-donut {
     align-items: center;
     position: sticky;
     position: -webkit-sticky;
-    top: 600px;
+    top: 0;
 
     .company-profile-header{
         min-width: 200px;

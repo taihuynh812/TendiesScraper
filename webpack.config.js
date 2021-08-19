@@ -7,6 +7,8 @@ const config = {
         path.resolve(__dirname, 'src', 'index.scss'),
         path.resolve(__dirname, 'src', 'companies.js'),
         path.resolve(__dirname, 'src', 'companies.scss'),
+        path.resolve(__dirname, 'src', 'modal.js'),
+        path.resolve(__dirname, 'src', 'modal.scss'),
     ],
     output: {
         path: path.join(__dirname, 'dist'), 

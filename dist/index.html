@@ -21,8 +21,25 @@
             <a href="https://angel.co/u/tai-huynh-7" target="_blank"><i class="fab fa-angellist"></i></a>
         </div>
         <div class="page-header">TendiesScraper</div>
-        <div class="information">
+        <div id="information">
             <i class="fas fa-info-circle"></i>
+        </div>
+
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h1 class="modal-header">Welcome to TendiesScraper!</h1>
+                <h2>What does TendiesScraper do?</h2>
+                <p class="information-content">TendiesScraper pulls data from posts that were created on subreddit page WallStreetBets within the past 24 hours. It then parses 
+                    through the posts' titles and comments to find the 10 most mentioned stock tickers. Based on the the top 10 stocks, which are listed in bar graph, 
+                    it will display further information on each stock such as company profile, latest buy/sell recommendations, and past 5 days
+                    stock performance. If the 5 days performance was positive, line graph will be shown in <span style="color:green">green</span>, 
+                    else, the line graph will be <span style="color:red">red</span>. 
+                </p>
+                <p>
+                    Current sample size used in this project is 100 posts but will increase to 1,000 in near future.
+                </p>
+            </div>
         </div>
     </div>
     <div className="body-container" style="text-align: center;">
