@@ -21,7 +21,7 @@ let excludeWords = ["COVID", "DD", "NO", "YES", "WSB", "SHORT", "NYC", "FLOAT", 
         "JPOW", "CEO", "VOTE", "BITCH", "LIKE", 'WTF', "MINOR", "IPO", "APE", "SAVE", "SPAC", "DO", "DONT", "PLACE", "YOUR", "MY", "MINE", "PORN", "WEDGE", "EV",
         "JOB", "IN", "OUT", "JAIL", "AND", "IRL", "IS", "ETF", "DOW", "DIA", "MOVE", "CNN", "THANK", "FUCK", "FK", "GAMMA", "LETS", "IT", "THEY", "ETORO", "TRUST",
         "FOMO", "RAPE", "RAPED", "PUT", "CALL", "COVER", "BOYS", "MOASS", "GONNA", "FOR", "MLB", "LOAD", "MISS", "HF", "FUND", "ONLY", "WIFE", "OP", "ITS", "SAY",
-        "SAYS",
+        "SAYS", "BABY", "DADDY", "NEEDS", "OUR", "HELP", "IM", "I'M"
         ].reduce((acc, a) => (acc[a]="placeholder", acc), {})
 
 
