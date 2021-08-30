@@ -3,6 +3,7 @@ import './companies.scss'
 import test from '../test'
 
 companyProfiles.then(data => {
+    console.log(data)
     const sorted = []
     const recommends = []
     const prices = []
@@ -158,12 +159,14 @@ companyProfiles.then(data => {
             .append('svg')
                 .attr("width", priceWidth + priceMargin.left + priceMargin.right)
                 .attr("height", priceHeight + priceMargin.top + priceMargin.bottom)
+        const bounds = svg
             .append("g")
                 .attr("transform", `translate(${priceMargin.left},${priceMargin.top})`);
         
-
+        const yAccessor = (d) => d.close
         const parseDate = d3.timeParse('%Y-%m-%dT%H:%M:%S%Z')
-            
+        const xAccessor = (d) => parseDate(d.date)
+
         var highPrice  
         var lowPrice
 
@@ -214,41 +217,75 @@ companyProfiles.then(data => {
             .call(d3.axisBottom(x))
             .attr("class", "d3-axes")
 
-        const bisectDate = d3.bisector(function(d) { return d.date; }).left,
-            formatValue = d3.format(",.2f"),
+
+        //set up mouseover interaction 
+
+        const formatValue = d3.format(",.2f"),
             formatCurrency = function(d) { return "$" + formatValue(d); };
 
-        const focus = svg.append('g')
-            .attr('class', 'focus')
-            .style('display', 'none')
-    
-        focus.append('circle')
-            .attr('r', 4.5);
-
-        focus.append('text')
-            .attr("class", "focus-text")
-            .attr("fill", "white")
-            .attr('x', 9)
-            .attr('dy', '.35em');
-
-        svg.append("rect")
-            .attr("class", "overlay")
+        const listeningRect = svg.append("rect")
+            .attr("class", "listening-rect")
             .attr("width", priceWidth)
             .attr("height", priceHeight)
-            .on("mouseover", function() { focus.style("display", null); })
-            .on("mouseout", function() { focus.style("display", "none"); })
-            .on("mousemove", mousemove);
+            .on("mousemove", onMouseMove)
+            .on("mouseleave", onMouseLeave);
 
-        function mousemove() {
-            var x0 = x.invert(d3.mouse(this)[0]),
-                i = bisectDate(data, x0, 1),
-                d0 = data[i - 1],
-                d1 = data[i],
-                d = x0 - d0.date > d1.date - x0 ? d1 : d0;
-                console.log(i)
-            focus.attr("transform", "translate(" + x(parseDate(d.date)) + "," + y(d.close) + ")");
-            focus.select("text").text(formatCurrency(d.close));
+        const xAxisLine = svg.append('g')
+            .append("rect")
+            .attr("class", "dotted")
+            .attr("stroke-width", "1px")
+            .attr("width", ".5px")
+            .attr('fill', "white")
+            .attr("height", priceHeight);
+
+        // Add a circle under our tooltip, right over the “hovered” point
+        
+        const tooltip = d3.select("#tooltip"); 
+        const tooltipCircle = svg
+            .append("circle")
+            .attr("class", "tooltip-circle")
+            .attr("r", 4)
+            .attr("stroke", "#af9358")
+            .attr("fill", "white")
+            .attr("stroke-width", 2)
+            .style("opacity", 0);
+
+        function onMouseMove(){
+            const mousePosition = d3.mouse(this)
+            const hoveredDate = x.invert(mousePosition[0])
+
+            const getDistanceFromHoveredDate = (d) => Math.abs(xAccessor(d) - hoveredDate);
+
+            const closetIndex = d3.scan(
+                data, (a,b) => getDistanceFromHoveredDate(a) - getDistanceFromHoveredDate(b));
+
+            const closestDataPoint = data[closetIndex]
+            
+            const closestXValue = xAccessor(closestDataPoint);
+            const closestYValue = yAccessor(closestDataPoint);
+
+            const formatDate = d3.timeFormat("%A %B %-d, %Y");
+            
+            let displayText = formatDate(closestXValue) + ": " + formatCurrency(closestYValue)
+            tooltip.html(displayText)
+                    .style('left', (d3.event.pageX - 20) + "px")
+                    .style('top', (d3.event.pageY) + "px")
+            tooltip.select("#date").text(formatDate(closestXValue));
+            tooltip.select("#price").html(formatCurrency(closestYValue));
+            
+            tooltip.style("opacity", 1);
+            
+            tooltipCircle
+                .attr("cx", x(closestXValue))
+                .attr("cy", y(closestYValue))
+                .style("opacity", 1)
+
+            xAxisLine.attr("x", x(closestXValue));
+        }
+
+        function onMouseLeave() {
+            tooltip.style("opacity", 0);
+            tooltipCircle.style("opacity", 0);
         }
     }
-
 })

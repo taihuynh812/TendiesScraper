@@ -121,6 +121,7 @@ async function fetchCompanies(){
             return Promise.all(ticker)
         })
     )
+
     promiseAll.forEach((promise, i) =>{
         if (promise[0].name){
             companies.push(promise)
